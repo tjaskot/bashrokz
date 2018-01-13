@@ -12,5 +12,6 @@ do
 	then
 		s=$(echo "$c" | sed -e "s/- /&\n/;s/.*\n//")
 		mv "$c" "$s" 	
+		#sed -e 's/\[^]]*\]//'
 	fi
 done
