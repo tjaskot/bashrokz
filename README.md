@@ -9,3 +9,5 @@ Rockon!
 
 http://www.theunixschool.com/2014/08/sed-examples-remove-delete-chars-from-line-file.html
 http://mywiki.wooledge.org/BashGuide/TestsAndConditionals#Conditional_Blocks_.28if.2C_test_and_.5B.5B.29
+
+Example library for including colors in terminal outputs: https://github.com/ewohltman/bashful
