@@ -198,7 +198,7 @@ issLabOrFV = {
 #################################
 
 # Syntax: '<user>:<password>'
-user = 'F632830:Cre8Misc4'  # TODO update when needed
+user = 'F632830:<password>'  # TODO update when needed
 encodedBytes = base64.b64encode(user.encode("utf-8"))
 encodedStr = str(encodedBytes, "utf-8")
 
