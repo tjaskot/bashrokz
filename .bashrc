@@ -89,8 +89,21 @@ fi
 
 # some more ls aliases
 alias ll='ls -alF'
-alias la='ls -A'
 alias l='ls -CF'
+alias la='ls -A'
+alias l1='ls -lr1a'
+alias p='python3'
+alias act='source ./venv/Scripts/activate'
+alias one='cd ~/OneDrive\ -\ kochind.com'
+alias t='/bin/terraform.exe'
+alias k='C:/Program\ Files/Docker/Docker/resources/bin/kubectl.exe'
+alias d='C:/Program\ Files/Docker/Docker/resources/bin/docker'
+alias ex='explorer.exe'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
