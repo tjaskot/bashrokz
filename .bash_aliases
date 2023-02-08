@@ -17,6 +17,7 @@ alias dact='deactivate'
 alias hl='h local'
 alias f='foreman'
 alias fs='foreman start'
+alias vl='vim ~/localinfo'
 
 # some more ls aliases
 alias ll='ls -alF'
