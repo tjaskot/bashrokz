@@ -1,0 +1,5 @@
+start "Sublime" "C:\Users\OneDrive\Documents\Sublime Text Build 3211 x64\sublime_text" 
+
+start "git free" "C:\Users\AppData\Local\Programs\Git\git-bash.exe"
+start "git Doc" "C:\Users\AppData\Local\Programs\Git\git-bash.exe" --cd="C:\Users\Documents"
+start "git OD" "C:\Users\AppData\Local\Programs\Git\git-bash.exe" --cd="C:\Users\OneDrive"
