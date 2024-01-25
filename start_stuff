@@ -1,18 +1,28 @@
-start "ubuntu" cmd /k "wsl.exe --cd ~"
+rem start "ubuntu" cmd /k "wsl.exe --cd ~"
 
-start "Sublime" "C:\Users\285786\Documents\Sublime Text Build 3211 x64\sublime_text" 
+start "Sublime" "C:\Program Files\Sublime Text\sublime_text" 
 
-start "git Doc" "C:\Users\285786\AppData\Local\Programs\Git\git-bash.exe" --cd="C:\Users\285786\Documents"
-start "git OD" "C:\Users\285786\AppData\Local\Programs\Git\git-bash.exe" --cd="C:\Users\285786\OneDrive - CarMax"
+start "git Doc" "C:\Program Files\Git\git-bash.exe" --cd="C:\Users\285786\Documents\dev"
+start "git OD" "C:\Program Files\Git\git-bash.exe" --cd="C:\Users\285786\OneDrive - CarMax"
 
-2 outloaoks
+rem 2 outlooks
 start "Mail" "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK"
 start "Calendar" "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK"
+start "FirstWorkspace" "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK"
 
 start "OneNote" "C:\Program Files\Microsoft Office\root\Office16\ONENOTE"
+start "FWOneNote" "C:\Program Files\Microsoft Office\root\Office16\ONENOTE"
 
-rem pycharm
+rem jetbrains
+start "Pycharm" "C:\Program Files\JetBrains\PyCharm Community Edition 2023.1\bin\pycharm64"
+start "Idea" "C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2023.1\bin\idea64"
 
+rem browsers
+start "Brave" "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave"
+start "Firefox" "C:\Program Files\Mozilla Firefox\firefox"
 start "Chrome" "C:\Program Files\Google\Chrome\Application\chrome"
 
-start "Postman" "C:\Users\285786\AppData\Local\Postman\Postman"
+rem start "Postman" "C:\Users\t\AppData\Local\Postman\Postman"
+
+rem zoom
+rem start "Zoom" "C:\Users\t\AppData\Roaming\Zoom\bin\Zoom"
