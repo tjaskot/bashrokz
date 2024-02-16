@@ -10,6 +10,17 @@ alias dev='cd /d/dev'
 alias blu='cd /c/Users/trevo/Documents/Bluetooth'
 alias mis='cd /c/Users/trevo/mis'
 
+# Cygwin
+alias trev='cd /cygdrive/c/Users/trevo'
+alias doc='cd /cygdrive/c/Users/trevo/Documents'
+alias dwn='cd /cygdrive/c/Users/trevo/Downloads'
+alias desk='cd /cygdrive/c/Users/trevo/Desktop'
+alias pic='cd /cygdrive/c/Users/trevo/Pictures'
+alias vid='cd /cygdrive/c/Users/trevo/Videos'
+alias dev='cd /cygdrive/d/dev'
+alias blu='cd /cygdrive/c/Users/trevo/Documents/Bluetooth'
+alias mis='cd /cygdrive/c/Users/trevo/mis'
+
 # WSL
 # # alias trev='cd /mnt/c/Users/trevo'
 # alias doc='cd /mnt/c/Users/trevo/Documents'
