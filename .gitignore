@@ -1,1 +1,39 @@
+# Logs
+logs
+*.log
 
+# Runtime dta
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Virtual Environment
+venv
+
+# NodeJs generated files
+node_modules/
+node_modules_backup/
+**/bin/
+**/obj/
+npm
+
+# Tarball
+*.tgz
+
+# Environment Variables
+.env
+
+# Visual Studio Code Generated Files
+.vscode/
+.vs
+.vsp
+.vspx
+
+# Idea Generated Files
+.idea
+*.iml
+
+build/
+public/
+__pycache__
