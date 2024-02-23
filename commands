@@ -1,0 +1,94 @@
+git rm -r --cached bin/
+
+:%s/\\/\//g
+
+kubectl get pods podName -o jsonpath='{.spec.containers[*].name}'
+
+# Exec into pod
+winpty kubectl.exe exec -it podName -- bash
+
+# Not using bash for sidecar container because of image chosen
+winpty kubectl exec -it podName -c sidecarName -- sh
+
+k create ns apps
+k config current-context
+k config get-contexts
+k config use-context <context name>
+k config set-context --current --namespace=apps
+
+kubectl create secret docker-registry deploy-token --docker-server=carmax-docker-local.jfrog.io --docker-username=123456 --docker-password=abcdefghijklmnopqrstuvwxyz --docker-email=fo@fo.com
+# Docker Secret pull images
+kubectl create secret docker-registry deploy-token --docker-server=carmax-docker-local.jfrog.io --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+
+# View current context cluster
+k config current-context
+# View current namespace 
+kubectl config view --minify -o jsonpath='{..namespace}'
+
+Get-ADGroupMember -Identity ad-group-name | ft
+
+
+Beginner - Commands
+ls (having a terminal to use)
+az login
+az account set --subscription 06a856b4-4f7b-49b6-9f16-9757c00bfe52
+az aks get-credentials --resource-group workshop --name workshopcluster1
+kubectl
+alias k='kubectl'
+k get ns
+k get pods
+k get services
+k apply -f filename.yml
+k get deployments
+k logs podname-guid
+k describe podname-guid
+
+Intermediate - Commands
+k describe podname-guid
+# View current context cluster
+k config current-context
+# View current namespace 
+kubectl config view --minify -o jsonpath='{..namespace}'
+kubectl get pods podname-guid -o jsonpath='{.spec.containers[*].name}'
+winpty kubectl.exe exec -it podname-guid -- bash
+kubectl create secret docker-registry deploy-token --docker-server=carmax-docker-local.jfrog.io --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+# Go through each 3 types of services
+k apply -f serviceType.yml
+# Azure portal to review changes
+services, pods, workloads
+
+Advanced - Commands
+# Review fleet manager
+Azure portal and add aks cluster
+k set image deployments/nginx-deployment nginx-deployment=carmax-docker-local.jfrog.io/nginx-html:v1.0
+k set image deployments/nginx-deployment nginx-deployment=carmax-docker-local.jfrog.io/nginx-html:v1.1
+kubectl rollout undo deployments/nginx-deployment
+# Update deployment version of nginx
+k apply -f filename.yml
+kubectl get pods -l app=nginx
+# Go through canary deployment
+k apply -f democanary.yml
+# Go through sidecar deployment
+k apply -f demosidecar.yml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trevor-demo-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
