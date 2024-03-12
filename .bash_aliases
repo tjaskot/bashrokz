@@ -19,7 +19,7 @@ alias k='C:/Program\ Files/Docker/Docker/resources/bin/kubectl.exe'
 alias d='C:/Program\ Files/Docker/Docker/resources/bin/docker'
 alias ex='explorer.exe'
 
-# Laptop
+# Cygwin Laptop
 alias vi='vim'
 alias trev='cd /cygdrive/c/Users/trevo'
 alias doc='cd /cygdrive/c/Users/trevo/Documents'
