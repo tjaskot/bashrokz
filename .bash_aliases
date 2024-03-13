@@ -4,6 +4,7 @@ alias p3='python3'
 alias s='source'
 alias h='heroku'
 alias venv='virtualenv'
+alias act='s ./bin/activate'
 alias dact='deactivate'
 alias hl='h local'
 alias f='foreman'
@@ -18,33 +19,20 @@ alias t='/bin/terraform.exe'
 alias k='C:/Program\ Files/Docker/Docker/resources/bin/kubectl.exe'
 alias d='C:/Program\ Files/Docker/Docker/resources/bin/docker'
 alias ex='explorer.exe'
-
-
-# Misc
-alias p3='python3'
-alias s='source'
-alias h='heroku'
-alias venv='virtualenv'
-alias act='s ./bin/activate'
-alias dact='deactivate'
-alias hl='h local'
-alias f='foreman'
-alias fs='foreman start'
-alias vl='vim ~/localinfo'
-
-
-# some more ls aliases
-alias ll='ls -alF'
-alias l='ls -CF'
-alias la='ls -A'
-alias l1='ls -lr1a'
-alias p='python3'
-alias act='source ./venv/Scripts/activate'
-alias t='/bin/terraform.exe'
-alias k='C:/Program\ Files/Docker/Docker/resources/bin/kubectl.exe'
-alias d='C:/Program\ Files/Docker/Docker/resources/bin/docker'
-alias ex='explorer.exe'
 alias pd='podman'
+
+
+# Linux
+alias vi='vim'
+alias trev='cd /home/trevo'
+alias doc='cd /home/trevo/Documents'
+alias dwn='cd /home/trevo/Downloads'
+alias desk='cd /home/trevo/Desktop'
+alias pic='cd /home/trevo/Pictures'
+alias vid='cd /home/trevo/Videos'
+alias dev='cd /home/trevor/Documents/dev'
+alias blu='cd /home/trevo/Documents/Bluetooth'
+alias mis='cd /home/trevo/mis'
 
 
 # GitBash
