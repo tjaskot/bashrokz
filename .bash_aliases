@@ -4,7 +4,6 @@ alias p3='python3'
 alias s='source'
 alias h='heroku'
 alias venv='virtualenv'
-alias act='s ./bin/activate'
 alias dact='deactivate'
 alias hl='h local'
 alias f='foreman'
@@ -14,12 +13,17 @@ alias ll='ls -alF'
 alias l='ls -CF'
 alias la='ls -A'
 alias l1='ls -lr1a'
-alias act='s ./venv/Scripts/activate'
 alias t='/bin/terraform.exe'
 alias k='C:/Program\ Files/Docker/Docker/resources/bin/kubectl.exe'
 alias d='C:/Program\ Files/Docker/Docker/resources/bin/docker'
 alias ex='explorer.exe'
 alias pd='podman'
+
+
+# Windows
+# alias act='s ./venv/Scripts/activate'
+# Linux
+# alias act='s ./venv/bin/activate'
 
 
 # Linux
