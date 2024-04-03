@@ -243,51 +243,54 @@ headers = {
 }
 
 
-class jiraCl:
+import json
+import requests
+
+
+class JiraCL:
     def __init__(self):
         self.url = str()
         self.data = str()
         self.project = str()
         self.headers = str()
-        self.classquery = str()
+        self.class_query = str()
 
-    def getProjJira(self):
-        if self.classquery == '' or self.classquery['jql'] == 'CHANGEME':
-            return 'jiraCl.classquery is not proper syntax, please set value or update jql: ' + str(self.classquery)
+    def get_project_jira(self):
+        if self.class_query == '' or self.class_query['jql'] == 'CHANGEME':
+            return 'jiraCl.class.query is not proper syntax, please set value or update jql: ' + str(self.classquery)
         return requests.get(
             url=self.url,
             data=self.data,
             headers=self.headers,
-            params=self.classquery  # this is class query var
+            params=self.class_query  # this is class query var
         )
 
     def __repr__(self):
         return "url: {} ; data: {} ; project: {} ; query: {}".format(self.url, self.data, self.project, self.classquery)
 
 
-def createNewProjJira(jiraProj, summary, description, urlused, issType, issPriority,
+def create_new_project_jira(jira_proj, summary, description, url_used, iss_type, iss_priority,
                       assignee=None, *args, **kwargs):
-
     # https://community.atlassian.com/t5/Answers-Developer-Questions/How-to-add-component-while-creating-an-issue-via-JIRA-REST-API/qaq-p/493660
     queryt = {
         'fields': {
             'project': {
-                'id': jiraProj
+                'id': jira_proj
             },
             'summary': summary,
             'description': description,
             'issuetype': {
-                'id': issType
+                'id': iss_type
             },
             'priority': {
-                'id': str(issPriority)  # Needs type string for jira api call
+                'id': str(iss_priority)  # Needs type string for jira api call
             },
             'assignee': {
                 'name': assignee
             },
             'components': [
                 {
-                    # 'id': '10916' 
+                    # 'id': '10916'
                 }
             ]
         }
@@ -296,14 +299,17 @@ def createNewProjJira(jiraProj, summary, description, urlused, issType, issPrior
     for dictKwargs in kwargs:
         queryt['fields'][dictKwargs] = kwargs[dictKwargs]
 
-    jtjira = requests.post(
-        url=urlused,
+    jt_jira = requests.post(
+        url=url_used,
         data=json.dumps(queryt),
-        headers=headers
+        headers=jira_proj.headers
     )
 
-    print("Under project: " + jiraProj + "\nCreated Jira: " + jtjira.text)
-    return jtjira.text
+    print("Under project: " + jira_proj + "\nCreated Jira: " + jt_jira.text)
+    return jt_jira.text
+
+
+
 
 def jApiObj(labelOrFixV, queryClassObj, jqlQuery):
     queryClassObj.classquery = jqlQuery  # set query attr in class obj
@@ -321,6 +327,8 @@ def jApiObj(labelOrFixV, queryClassObj, jqlQuery):
         elif labelOrFixV == 'labels':
             keyVList.append({'id': str(issLabOrFV[indFixV]).upper()})
     return keysum, keydesc, keyVList
+
+
 
 
 def addCurSprint(issid):
@@ -354,38 +362,43 @@ NOTE: Priority can be found by querying jira:
  ).text)
 """
 
+
+
 # Create class here so not creating new obj for each loop
-jiraCl = jiraCl()
-jiraCl.headers = headers
+jira_cl = JiraCL()
+jira_cl.headers = headers
 
 """ kwargs usage
     NOTE: Setting 'fixVersions' dict to keyVList forces **kwargs; if "keyVList" is used instead of 
           "fixVersions=keyVList", then object is set to *args not **kwargs, and becomes a Tuple.
 """
+
+
+
 for i in cil:
     # TODO, redo below as there is much duplicate code.
-    jiraCl.project = i[0].split('-')[0]  # set project val of obj, ex: 'TOMSE'
+    jira_cl.project = i[0].split('-')[0]  # set project val of obj, ex: 'TOMSE'
     query['jql'] = 'issue = ' + str(i)  # set jql value in param query
     if re.search('project', i):
         labelVar = 'fixVersions'
         # Extract jira from project and copy into TOMSE project
-        jiraCl.url = urlawmsearch
+        jira_cl.url = urlsearch
         query['fields'] = "key, summary, description, " + labelVar
-        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jiraCl, query)
+        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
         # Create jira w/ params: jiraProject, sum, desc, url, issueType, labels, priority, assignee
-        issuekey = createNewProjJira(tid, isssum, issdesc, urlt, issType['TOMSE']['Task'],
-                                     issuePriDict['TOMSE']['Medium'], user.split(':')[0],
+        issuekey = createNewProjJira(tid, isssum, issdesc, urlt, issType['tjira2']['Task'],
+                                     issuePriDict['tjira2']['Medium'], user.split(':')[0],
                                      labels=labelOfFvList)
         # Add issue key to TOMSE current Sprint board ID
         addCurSprint(json.loads(issuekey)['id'])  # Example w/ hardcoded issue key id: addCurSprint('1700886')
-    elif re.search('TOMSE', i):
+    elif re.search('tjira', i):
         labelVar = 'labels'
         # Extract jira from TOMSE and copy into project
-        jiraCl.url = urltsearch
+        jira_cl.url = urltsearch
         query['fields'] = "key, summary, description, " + labelVar
-        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jiraCl, query)
-        createNewProjJira(aid, isssum, issdesc, urlawmkanban, issType['AWMCCA']['Initiative'],
-                          issuePriDict['AWMCCA']['Medium'], user.split(':')[0],
+        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
+        createNewProjJira(aid, isssum, issdesc, urlawmkanban, issType['tjira']['Initiative'],
+                          issuePriDict['tjira']['Medium'], user.split(':')[0],
                           fixVersions=labelOfFvList)
     else:
         exit('Project Unrecognized. Currently working on adding project.')
