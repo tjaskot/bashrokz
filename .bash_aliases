@@ -1,4 +1,15 @@
-# General
+# -- Venv Script Locations --
+# Windows
+# alias act='s ./venv/Scripts/activate'
+# Linux
+# alias act='s ./venv/bin/activate'
+
+# -- Vim Shortcuts --
+# yank into clipboard
+# "+y
+
+
+# -- General -- 
 alias p='python3'
 alias p3='python3'
 alias s='source'
@@ -20,13 +31,7 @@ alias ex='explorer.exe'
 alias pd='podman'
 
 
-# Windows
-# alias act='s ./venv/Scripts/activate'
-# Linux
-# alias act='s ./venv/bin/activate'
-
-
-# Linux
+# -- Linux --
 alias vi='vim'
 alias trev='cd /home/trevo'
 alias doc='cd /home/trevo/Documents'
@@ -39,7 +44,7 @@ alias blu='cd /home/trevo/Documents/Bluetooth'
 alias mis='cd /home/trevo/mis'
 
 
-# GitBash
+# -- GitBash --
 alias vi='vim'
 alias trev='cd /c/Users/trevo'
 alias doc='cd /c/Users/trevo/Documents'
@@ -52,7 +57,7 @@ alias blu='cd /c/Users/trevo/Documents/Bluetooth'
 alias mis='cd /c/Users/trevo/mis'
 
 
-# Cygwin Laptop
+# -- Cygwin Laptop --
 alias vi='vim'
 alias trev='cd /cygdrive/c/Users/trevo'
 alias doc='cd /cygdrive/c/Users/trevo/Documents'
@@ -65,7 +70,7 @@ alias blu='cd /cygdrive/c/Users/trevo/Documents/Bluetooth'
 alias mis='cd /cygdrive/c/Users/trevo/mis'
 
 
-# Cygwin
+# -- Cygwin --
 alias trev='cd /cygdrive/c/Users/trevo'
 alias doc='cd /cygdrive/c/Users/trevo/Documents'
 alias dwn='cd /cygdrive/c/Users/trevo/Downloads'
@@ -77,7 +82,7 @@ alias blu='cd /cygdrive/c/Users/trevo/Documents/Bluetooth'
 alias mis='cd /cygdrive/c/Users/trevo/mis'
 
 
-# WSL
+# -- WSL --
 alias trev='cd /mnt/c/Users/trevo'
 alias doc='cd /mnt/c/Users/trevo/Documents'
 alias dwn='cd /mnt/c/Users/trevo/Downloads'
@@ -87,3 +92,18 @@ alias vid='cd /mnt/c/Users/trevo/Videos'
 alias dev='cd /mnt/d/dev'
 alias blu='cd /mnt/c/Users/trevo/Documents/Bluetooth'
 alias mis='cd /mnt/c/Users/trevo/mis'
+
+
+# -- Mac --
+alias p3="python3"
+alias vl="vim ~/localinfo"
+alias doc="cd /Users/trevorjaskot/Documents"
+alias desk="cd /Users/trevorjaskot/Desktop"
+alias dwn="cd /Users/trevorjaskot/Downloads"
+alias dev="cd /Users/trevorjaskot/Documents/dev"
+alias pic="cd /Users/trevorjaskot/Pictures"
+alias s="source"
+alias act="source ./.venv/bin/activate"
+alias dact="deactivate"
+alias k="kubectl"
+alias d="docker"
