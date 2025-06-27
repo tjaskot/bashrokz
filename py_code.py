@@ -106,7 +106,16 @@ import jira
 import base64
 import requests
 
-### Issue Priority Table ###
+email = ""
+api_token = ""
+server_url = "https://cyera.atlassian.net/"
+# epic_key = AB-12345
+# epic_url = f"{server_urls}/rest/api/2/issue/{epic_key}"
+cyera_url_search = f"{server_url}/rest/api/2/search"
+# epic_key = ""
+filename = "jira_output.txt"
+
+# ## Issue Priority Table ## #
 # 'id': '4'      # AWMCCA -> Low
 # 'id': '10101'  # AWMCCA -> Medium
 # 'id': '10100'  # AWMCCA -> High
@@ -127,33 +136,33 @@ import requests
 
 issuePriDict = {
     'AWMCCA': {
-        'Low':        4,
-        'Medium':     10101,
-        'High':       10100,
+        'Low': 4,
+        'Medium': 10101,
+        'High': 10100,
         'Regulatory': 10203,
-        'Emergency':  10205
+        'Emergency': 10205
     },
     'TOMSE': {
-        'Trivial':     10006,
-        'Minor':       10008,
-        'Low':         4,
-        'Medium':      3,
-        'High':        2,
-        'Urgent':      10000,
+        'Trivial': 10006,
+        'Minor': 10008,
+        'Low': 4,
+        'Medium': 3,
+        'High': 2,
+        'Urgent': 10000,
         'Showstopper': 10005
     },
     'AWMCLOUD': {
-        'Low':         4,
-        'Medium':      10101,
-        'High':        10100,
-        'Emergency':   10205,
-        'Regulatory':  10203,
+        'Low': 4,
+        'Medium': 10101,
+        'High': 10100,
+        'Emergency': 10205,
+        'Regulatory': 10203,
     }
 }
 
 ############################
 
-### Issue Type Table ###
+# ## Issue Type Table ## #
 # AWMCCA
 # 'id': '10507'  # -> Initiative
 # TOMSE
@@ -166,21 +175,21 @@ issuePriDict = {
 
 issType = {
     'AWMCCA': {
-        'Initiative':           10507
+        'Initiative': 10507
     },
     'TOMSE': {
-        'Task':                 10213,
-        'User Story':           10217,
-        'Use Case':             10216,
+        'Task': 10213,
+        'User Story': 10217,
+        'Use Case': 10216,
         'Enhancement Requests': 10204
     },
     'AWMCLOUD': {
-        'Story':                10505
+        'Story': 10505
     }
 }
 ########################
 
-### Fix Versions Object Table ###
+# ## Fix Versions Object Table ## #
 # 'id': '11802'  # -> GAP
 # 'id': '11800'  # -> GKP
 # 'id': '23600'  # -> GAIA
@@ -188,20 +197,19 @@ issType = {
 # 'id': '12100'  # -> GSaaS(ElasticSearch)
 
 issLabOrFV = {
-    'GAP':                  11802,
-    'GKP':                  11800,
-    'GAIA':                 23600,
-    'GOS':                  11803,
+    'GAP': 11802,
+    'GKP': 11800,
+    'GAIA': 23600,
+    'GOS': 11803,
     'GSaaS(ElasticSearch)': 12100
 }
 
 #################################
-
+# ## Basic Auth ## #
 # Syntax: '<user>:<password>'
 user = '<user>:<password>'  # TODO update when needed
 encodedBytes = base64.b64encode(user.encode("utf-8"))
 encodedStr = str(encodedBytes, "utf-8")
-
 
 # Can have multiple items, jira Issue(s) here. No need to change JQl if this var is set. TODO: ENSURE LIST TYPE!!!
 cil = ['abc123-1035']  # TODO update when needed
@@ -215,36 +223,42 @@ headers = {
     'cache-control': "no-cache"
 }
 
+# ## API Auth ## #
+jira_login = jira.JIRA(
+    server=server_url,
+    basic_auth=(email, api_token),
+    options={
+        'verify': True,  # Verify SSL certificates
+        'check_update': False  # Don't check for updates
+    }
+)
+
 # User Variables
-tproj = 'TOMSE'       # <JIRA Project: key='TOMSE', name='TOMSE', id='52507'>  # (Retrieved with jira.client.JIRA())
-tid = '52507'         # From print(jira.client.Jira(<server>).projects())
-awmproj = 'abc123'    # <JIRA Project: key='abc123', name='name', id='10705'>  # (Retrieved with jira.client.JIRA())
-aid = '10705'         # From print(jira.client.Jira(<server>).projects())
-awmcloud = 'abc567' # <JIRA Project: key='abc567', id='10812'>  # (Retrieved with jira.client.JIRA())
-awmc = '10812'        # From print(jira.client.Jira(<server>).projects())
+tproj = 'TOMSE'  # <JIRA Project: key='TOMSE', name='TOMSE', id='52507'>  # (Retrieved with jira.client.JIRA())
+tid = '52507'  # From print(jira.client.Jira(<server>).projects())
+awmproj = 'abc123'  # <JIRA Project: key='abc123', name='name', id='10705'>  # (Retrieved with jira.client.JIRA())
+aid = '10705'  # From print(jira.client.Jira(<server>).projects())
+awmcloud = 'abc567'  # <JIRA Project: key='abc567', id='10812'>  # (Retrieved with jira.client.JIRA())
+awmc = '10812'  # From print(jira.client.Jira(<server>).projects())
 
 # TOMSE urls
-urlt = "https://jira.com/rest/api/2/issue"             # NOTE: '/issue' AT THE END
-urltsearch = "https://jira.com/rest/api/2/search"      # NOTE: '/issue' AT THE END
+urlt = "https://jira.com/rest/api/2/issue"  # NOTE: '/issue' AT THE END
+urltsearch = "https://jira.com/rest/api/2/search"  # NOTE: '/issue' AT THE END
 urlsprint = "https://jira.com/rest/agile/1.0/sprint/"  # Note: '/' as the tailing character
 
 # AWMCCA/AWMCLOUD urls
-urlawmsearch = "https://jira.com/rest/api/2/search"      # NOTE: '/search' AT THE END
-urlawmkanban = "https://jira.com/rest/api/2/issue"       # NOTE: '/issue' AT THE END
+urlawmsearch = "https://jira.com/rest/api/2/search"  # NOTE: '/search' AT THE END
+urlawmkanban = "https://jira.com/rest/api/2/issue"  # NOTE: '/issue' AT THE END
 
 encodedBytes = base64.b64encode(user.encode("utf-8"))
 encodedStr = str(encodedBytes, "utf-8")
 
-headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Basic ' + encodedStr,  # Specify auth type in module
-    'cache-control': "no-cache"
-}
-
-
-import json
-import requests
+# headers = {
+#     'Accept': 'application/json',
+#     'Content-Type': 'application/json',
+#     'Authorization': 'Basic ' + encodedStr,  # Specify auth type in module
+#     'cache-control': "no-cache"
+# }
 
 
 class JiraCL:
@@ -270,7 +284,7 @@ class JiraCL:
 
 
 def create_new_project_jira(jira_proj, summary, description, url_used, iss_type, iss_priority,
-                      assignee=None, *args, **kwargs):
+                            assignee=None, *args, **kwargs):
     # https://community.atlassian.com/t5/Answers-Developer-Questions/How-to-add-component-while-creating-an-issue-via-JIRA-REST-API/qaq-p/493660
     queryt = {
         'fields': {
@@ -309,8 +323,6 @@ def create_new_project_jira(jira_proj, summary, description, url_used, iss_type,
     return jt_jira.text
 
 
-
-
 def jApiObj(labelOrFixV, queryClassObj, jqlQuery):
     queryClassObj.classquery = jqlQuery  # set query attr in class obj
     indjira = json.loads(queryClassObj.getProjJira().text)
@@ -329,10 +341,7 @@ def jApiObj(labelOrFixV, queryClassObj, jqlQuery):
     return keysum, keydesc, keyVList
 
 
-
-
 def addCurSprint(issid):
-
     mj = jira.client.JIRA(server='https://jira.com/',
                           basic_auth=(user.split(':')[0], user.split(':')[1]))
     # Get board ID from UI, hover over 'Configure' board link upper right drop-down to see ID number
@@ -353,6 +362,7 @@ def addCurSprint(issid):
 
     return addj.text
 
+
 """
 NOTE: Priority can be found by querying jira:
  json.loads(requests.get(
@@ -361,8 +371,6 @@ NOTE: Priority can be found by querying jira:
      params={"jql": "issue = TOMSE-212", "fields": "key,summary,description,priority"}
  ).text)
 """
-
-
 
 # Create class here so not creating new obj for each loop
 jira_cl = JiraCL()
@@ -373,38 +381,110 @@ jira_cl.headers = headers
           "fixVersions=keyVList", then object is set to *args not **kwargs, and becomes a Tuple.
 """
 
-
-
 for i in cil:
-    # TODO, redo below as there is much duplicate code.
-    jira_cl.project = i[0].split('-')[0]  # set project val of obj, ex: 'TOMSE'
-    query['jql'] = 'issue = ' + str(i)  # set jql value in param query
-    if re.search('project', i):
-        labelVar = 'fixVersions'
-        # Extract jira from project and copy into TOMSE project
-        jira_cl.url = urlsearch
-        query['fields'] = "key, summary, description, " + labelVar
-        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
-        # Create jira w/ params: jiraProject, sum, desc, url, issueType, labels, priority, assignee
-        issuekey = createNewProjJira(tid, isssum, issdesc, urlt, issType['tjira2']['Task'],
-                                     issuePriDict['tjira2']['Medium'], user.split(':')[0],
-                                     labels=labelOfFvList)
-        # Add issue key to TOMSE current Sprint board ID
-        addCurSprint(json.loads(issuekey)['id'])  # Example w/ hardcoded issue key id: addCurSprint('1700886')
-    elif re.search('tjira', i):
-        labelVar = 'labels'
-        # Extract jira from TOMSE and copy into project
-        jira_cl.url = urltsearch
-        query['fields'] = "key, summary, description, " + labelVar
-        isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
-        createNewProjJira(aid, isssum, issdesc, urlawmkanban, issType['tjira']['Initiative'],
-                          issuePriDict['tjira']['Medium'], user.split(':')[0],
-                          fixVersions=labelOfFvList)
-    else:
-        exit('Project Unrecognized. Currently working on adding project.')
+    jql_query = f'"Epic Link" = {epic_key}'
+    command = ['issue', 'list', '--jql', jql_query, '--plain', '--columns', 'key,summary']
+    # ## API Auth ## #
+    jira_login = jira.JIRA(
+        server=server_url,
+        basic_auth=(email, api_token),
+        options={
+            'verify': True,  # Verify SSL certificates
+            'check_update': False  # Don't check for updates
+        }
+    )
+    current_user = jira_login.current_user()
+    print(f"Successfully authenticated as: {current_user}")
+
+    # Jira payload details
+    # ## Basic Auth ## #
+    # Syntax: '<user>:<password>'
+    user = f'{email}:{api_token}'  # TODO update when needed
+    encodedBytes = base64.b64encode(user.encode("utf-8"))
+    encodedStr = str(encodedBytes, "utf-8")
+    payload = {}
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + encodedStr,  # Specify auth type in module
+        'cache-control': "no-cache"
+    }
+
+    # Obtain Epic name
+    epic_url = f"https://cyera.atlassian.net/rest/api/2/issue/{epic_key}"
+    epic_info = json.loads(requests.get(epic_url, headers=headers, data=payload).text)
+    epic_name = epic_info["fields"]["summary"]
+    print(f"Epic Name: {epic_name}")
+
+    # Obtain full list of Epic issues, extract key and description for AI summary
+    url = f"https://cyera.atlassian.net/rest/api/2/search?jql=%22Epic%20Link%22%20=%20{epic_key}"
+    response = requests.get(url, headers=headers, data=payload)
+    url_bsmn_proj = json.loads(response.text)
+    # print(url_bsmn_proj)
+
+    desc_file_output = "- Output summary of epic issues and descriptions - \n\n"
+    # Parsing and printing the requested fields for each issue
+    for issue in url_bsmn_proj.get('issues', []):
+        # Extract the requested fields
+        key = issue.get('key', 'N/A')
+        fields = issue.get('fields', {})
+        issue_name = fields.get('issuetype', {}).get('name', 'N/A')
+        description = fields.get('description', 'N/A')
+        summary = fields.get('summary', 'N/A')
+        labels = fields.get('labels', [])
+
+        # Print the extracted information
+        print(f"Issue Key: {key}")
+        print(f"Issue Name: {issue_name}")
+        print(f"Summary: {summary}")
+        # print(f"Description: {description}")
+        # print(f"Labels: {labels}")
+        # print(f"Fields: {fields}")
+        print("-" * 50)
+        desc_file_output += '\n'
+        desc_file_output += f"Issue Name: {issue_name}"
+        desc_file_output += f"Summary: {description}"
+
+    try:
+        with open(filename, 'w', encoding='utf-8') as file_output:
+            # file_output.write(f"Epic: {epic_key} - {epic_name} \n")
+            file_output.write("=" * 50 + "\n\n")
+            file_output.write(desc_file_output)
+            # f.write(f"Issue: {issue_key}\n")
+            # f.write("-" * 30 + "\n")
+            # f.write(f"{description}\n\n")
+            # f.write("=" * 50 + "\n\n")
+        print(f"Descriptions saved to {filename}")
+
+    except IOError as e:
+        print(f"Error writing to file {filename}: {e}")
+        # sys.exit(1)
+        break
+
+    # jira_cl.project = i[0].split('-')[0]  # set project val of obj, ex: 'TOMSE'
+    # query['jql'] = 'issue = ' + str(i)  # set jql value in param query
+    # if re.search('project', i):
+    #     labelVar = 'fixVersions'
+    #     # Extract jira from project and copy into TOMSE project
+    #     jira_cl.url = cyera_url_search
+    #     query['fields'] = "key, summary, description, " + labelVar
+    #     isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
+    #     # Create jira w/ params: jiraProject, sum, desc, url, issueType, labels, priority, assignee
+    #     # issuekey = createNewProjJira(tid, isssum, issdesc, urlt, issType['tjira2']['Task'],
+    #     #                              issuePriDict['tjira2']['Medium'], user.split(':')[0],
+    #     #                              labels=labelOfFvList)
+    #     # Add issue key to TOMSE current Sprint board ID
+    #     # addCurSprint(json.loads(issuekey)['id'])  # Example w/ hardcoded issue key id: addCurSprint('1700886')
+    # elif re.search('tjira', i):
+    #     labelVar = 'labels'
+    #     # Extract jira from TOMSE and copy into project
+    #     jira_cl.url = urltsearch
+    #     query['fields'] = "key, summary, description, " + labelVar
+    #     isssum, issdesc, labelOfFvList = jApiObj(labelVar, jira_cl, query)
+    #     # createNewProjJira(aid, isssum, issdesc, urlawmkanban, issType['tjira']['Initiative'],
+    #     #                   issuePriDict['tjira']['Medium'], user.split(':')[0],
+    #     #                   fixVersions=labelOfFvList)
+    # else:
+    #     exit('Project Unrecognized. Currently working on adding project.')
 
 print('Created jira(s) in projects with attributes.')
-
-
-
-
