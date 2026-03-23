@@ -106,32 +106,31 @@ check_api_key() {
 }
 
 check_hotspot_priority() {
-    local iface="wlp4s0"
-
     if ! command -v nmcli >/dev/null 2>&1; then
-        echo "✗ ⚠ nmcli missing (NetworkManager tools not installed)"
+        echo "✗ ⚠ nmcli missing"
+        return 1
     fi
 
-    # Get connection name cleanly (strip field label)
-    local conn_line
-    conn_line=$(nmcli -t -f GENERAL.CONNECTION device show "$iface" 2>/dev/null || true)
-    local conn_name="${conn_line#*:}"   # Remove everything before and including first ':'
+    nmcli -t -f DEVICE,TYPE device status | awk -F: '$2=="wifi"{print $1}' | while read -r iface; do
+        local conn_line conn_name pri
 
-    if [[ -z "$conn_name" || "$conn_name" == "$conn_line" ]]; then
-        echo "✗ ⚠ No active connection on $iface (hotspot may be off / not managed)"
-    fi
+        conn_line=$(nmcli -t -f GENERAL.CONNECTION device show "$iface" 2>/dev/null || true)
+        conn_name="${conn_line#*:}"
 
-    local pri
-    pri=$(nmcli -t -g connection.autoconnect-priority connection show "$conn_name" 2>/dev/null || echo "UNKNOWN")
+        if [[ -z "$conn_name" || "$conn_name" == "$conn_line" ]]; then
+            echo "✗ ⚠ No active connection on $iface"
+            continue
+        fi
 
-    if [[ "$pri" == "-100" ]]; then
-        echo "✓ Hotspot '$conn_name' (on $iface) has priority -100 (low – correct)"
-    elif [[ "$pri" == "UNKNOWN" ]]; then
-        echo "✗ Failed to read priority for '$conn_name'"
-    else
-        echo "✗ ⚠ Hotspot '$conn_name' (on $iface) has priority $pri (want: -100)"
-        echo "   Fix: nmcli connection modify \"$conn_name\" connection.autoconnect-priority -100"
-    fi
+        pri=$(nmcli -t -g connection.autoconnect-priority connection show "$conn_name" 2>/dev/null || echo "UNKNOWN")
+
+        if [[ "$pri" == "-100" ]]; then
+            echo "✓ Hotspot '$conn_name' (on $iface) correct"
+        else
+            echo "✗ ⚠ '$conn_name' (on $iface) priority = $pri (want -100)"
+	    echo "Fix: nmcli connection modify \"$conn_name\" connection.autoconnect-priority -100"
+        fi
+    done
 }
 
 # ──────────────────────────────────────────────────────────────
