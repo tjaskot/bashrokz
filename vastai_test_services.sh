@@ -41,6 +41,91 @@ check_nvidia() {
     fi
 }
 
+check_docker_permissions() {
+    local sock="/var/run/docker.sock"
+    local all_ok=true
+
+    # 1. Socket exists
+    if [[ ! -S "$sock" ]]; then
+        echo "✗ Docker socket missing: $sock (is Docker running?)"
+        return 1
+    fi
+
+    # 2. Socket group is docker
+    local sock_group
+    sock_group=$(stat -c '%G' "$sock" 2>/dev/null || echo "unknown")
+    if [[ "$sock_group" == "docker" ]]; then
+        echo "✓ Docker socket group is 'docker'"
+    else
+        echo "✗ Docker socket group is '$sock_group' (expected 'docker')"
+        echo "  Fix: sudo chown root:docker $sock"
+        all_ok=false
+    fi
+
+    # 3. Socket permissions are 660
+    local sock_perms
+    sock_perms=$(stat -c '%a' "$sock" 2>/dev/null || echo "unknown")
+    if [[ "$sock_perms" == "660" ]]; then
+        echo "✓ Docker socket permissions are 660"
+    else
+        echo "✗ Docker socket permissions are $sock_perms (expected 660)"
+        echo "  Fix: sudo chmod 660 $sock"
+        all_ok=false
+    fi
+
+    # 4. Current user is in docker group
+    if groups "$USER" 2>/dev/null | grep -qw docker; then
+        echo "✓ User '$USER' is in the docker group"
+    else
+        echo "✗ User '$USER' is NOT in the docker group"
+        echo "  Fix: sudo usermod -aG docker $USER && newgrp docker"
+        all_ok=false
+    fi
+
+    # 5. Drop-in config exists to survive restarts
+    local dropin="/etc/systemd/system/docker.service.d/10-socket-perms.conf"
+    if [[ -f "$dropin" ]]; then
+        echo "✓ Systemd drop-in exists (permissions survive restarts)"
+    else
+        echo "✗ Systemd drop-in missing: $dropin"
+        echo "  Fix: re-run the ExecStartPost drop-in setup"
+        all_ok=false
+    fi
+
+    # 6. Docker actually works without sudo
+    if docker ps >/dev/null 2>&1; then
+        echo "✓ 'docker ps' works without sudo"
+    else
+        echo "✗ 'docker ps' failed without sudo (permissions not effective in this session)"
+        echo "  Fix: run 'newgrp docker' or log out and back in"
+        all_ok=false
+    fi
+
+    # 7. Check ALL non-system users are in docker group
+    echo ""
+    echo "  Docker group membership (all users UID≥1000):"
+    local any_missing=false
+    while IFS=: read -r uname _ uid _; do
+        if [[ "$uid" -ge 1000 && "$uname" != "nobody" ]]; then
+            if groups "$uname" 2>/dev/null | grep -qw docker; then
+                echo "  ✓ $uname"
+            else
+                echo "  ✗ $uname is NOT in docker group"
+                echo "    Fix: sudo usermod -aG docker $uname"
+                any_missing=true
+                all_ok=false
+            fi
+        fi
+    done < /etc/passwd
+
+    echo ""
+    if [[ "$all_ok" == true ]]; then
+        echo "✓ Docker permissions: all checks passed"
+    else
+        echo "✗ Docker permissions: one or more issues found (see above)"
+    fi
+}
+
 get_port_count() {
     local file="/var/lib/vastai_kaalia/host_port_range"
     if [[ -f "$file" ]]; then
@@ -146,6 +231,10 @@ if [[ "$MODE" == "overview" ]]; then
     check_nvidia
 
     echo ""
+    echo "=== Docker Socket & Permissions ==="
+    check_docker_permissions
+
+    echo ""
     echo "Port range configured:"
     get_port_count
 
@@ -163,8 +252,12 @@ if [[ "$MODE" == "overview" ]]; then
 
     echo ""
     echo "Recommendation:"
-    if systemctl is-active --quiet docker && systemctl is-active --quiet vastai && command -v nvidia-smi >/dev/null 2>&1; then
-        echo "→ Core services look healthy"
+    if systemctl is-active --quiet docker && \
+       systemctl is-active --quiet vastai && \
+       command -v nvidia-smi >/dev/null 2>&1 && \
+       docker ps >/dev/null 2>&1 && \
+       groups "$USER" | grep -qw docker; then
+        echo "→ Core services and Docker permissions look healthy"
         echo "→ Next: check dashboard for Verified / recent heartbeat / green Listed"
     else
         echo "→ Issues detected — run './vastai_services_test.sh detailed' for more info"
@@ -205,6 +298,10 @@ systemctl status docker --no-pager -l | head -n 15 || echo "Docker status not av
 echo ""
 docker --version 2>/dev/null || echo "docker command not found"
 echo "Running containers: $(docker ps -q | wc -l 2>/dev/null || echo '?')"
+echo ""
+
+echo "=== Docker Socket & Permissions ==="
+check_docker_permissions
 echo ""
 
 echo "=== Vast.ai Daemon (vastai.service) ==="
