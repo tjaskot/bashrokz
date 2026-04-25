@@ -1,5 +1,12 @@
 
 #!/usr/bin/env bash
+# --- ON NEW MACHINES ---
+# chmod +x fix_docker_permissions.sh
+# sudo bash fix_docker_permissions.sh
+# newgrp docker  # apply to current session
+# docker ps      # verify
+# -----------------------
+
 # fix_docker_permissions.sh
 # Fixes Docker socket permissions for all non-system users.
 # Run with: sudo bash fix_docker_permissions.sh
