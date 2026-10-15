@@ -1,6 +1,14 @@
-
 #!/usr/bin/env bash
-# --- ON NEW MACHINES ---
+
+### If fails, use: ###
+# sudo usermod -aG docker "$USER"
+# newgrp docker
+# docker run --rm busybox echo "docker works"
+# groups
+# ls -l /var/run/docker.sock
+#-----------------------
+
+### --- ON NEW MACHINES --- ###
 # chmod +x fix_docker_permissions.sh
 # sudo bash fix_docker_permissions.sh
 # newgrp docker  # apply to current session
